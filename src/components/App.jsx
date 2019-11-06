@@ -2,6 +2,8 @@ import VideoList from './VideoList.js';
 import Search from './Search.js';
 import VideoPlayer from './VideoPlayer.js';
 import Data from '../data/exampleVideoData.js';
+import SearchYouTube from '../lib/searchYouTube.js';
+import API_KEY from '../config/youtube.js';
 
 class App extends React.Component {
   constructor(props) {
@@ -12,6 +14,7 @@ class App extends React.Component {
       videoPlayer: Data[0],
     };
     this.clickedVideo = this.clickedVideo.bind(this);
+    this.getData = this.getData.bind(this);
   }
   clickedVideo(event) {
     let result = event.target.textContent;
@@ -19,9 +22,15 @@ class App extends React.Component {
     Data.forEach((value, index) => {
 
       if (result === value.snippet.title) {
-        this.setState({videoPlayer: Data[index]});
+        this.setState({ videoPlayer: Data[index] });
       }
     });
+  }
+
+  getData(input) {
+    console.log(input);
+    // console.log('this is logged from getData', input);
+    var res = SearchYouTube({key: API_KEY, q: input, max: 5}, console.log);
   }
 
   render() {
@@ -29,7 +38,7 @@ class App extends React.Component {
       <div>
         <nav className="navbar">
           <div className="col-md-6 offset-md-3">
-            <Search />
+            <Search searchYouTube={SearchYouTube} getData={this.getData} />
           </div>
         </nav>
         <div className="row">
@@ -44,6 +53,12 @@ class App extends React.Component {
     );
   }
 }
+
+export default App;
+
+
+
+
 
 // var App = () => (
 //   <div>
@@ -68,4 +83,3 @@ class App extends React.Component {
 
 // In the ES6 spec, files are "modules" and do not share a top-level scope
 // `var` declarations will only exist globally where explicitly defined
-export default App;
